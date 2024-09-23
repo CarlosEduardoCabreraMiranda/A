@@ -62,32 +62,29 @@ public class PersonaService implements IServicePersona {
     }
 
     @Override
-    public boolean actualizarParcialmente(Long id, String key, String value) {
-        Optional<Persona> optional = personaRepository.findById(id);
-        if (optional.isPresent() && !key.equalsIgnoreCase("id")) {
-            Persona persona = optional.get();
-
-            if (key.equalsIgnoreCase("nombre")) {
-                persona.setNombre(value);
+    public ResponseEntity<String> actualizarParcialmente(Long id, Map<String,String> json) {
+        Optional<Persona> personaBuscada = personaRepository.findById(id);
+        if (personaBuscada.isPresent()){
+            if (json.containsKey("id")) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No es posible actualizar el campo 'id'");
             }
-
-            if (key.equalsIgnoreCase("apellido")) {
-                persona.setApellido(value);
+            if (json.containsKey("nombre")) {
+                personaBuscada.get().setNombre(json.get("nombre"));
             }
-
-            if (key.equalsIgnoreCase("edad")) {
-                try{
-                    persona.setEdad(Integer.parseInt(value));
-                }catch(Exception e){
-                    e.printStackTrace();
+            if (json.containsKey("apellido")) {
+                personaBuscada.get().setApellido(json.get("apellido"));
+            }
+            if (json.containsKey("edad")) {
+                try {
+                    personaBuscada.get().setEdad(Integer.parseInt(json.get("edad")));
+                } catch (NumberFormatException e) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Formato inválido para 'edad'");
                 }
             }
-
-            personaRepository.save(persona);
-            return true;
-        } else {
-            return false;
+            personaRepository.save(personaBuscada.get());
+            return ResponseEntity.ok("Recurso actualizado parcialmente");
         }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("El recurso solicitado con el ID " + id + " no fue encontrado");
     }
 
     @Override
