@@ -1,6 +1,5 @@
 package com.example.BackendPersona.Controller;
 
-import com.example.BackendPersona.DTO.PatchDto;
 import com.example.BackendPersona.Entity.Persona;
 import com.example.BackendPersona.InterfaceService.IServicePersona;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @CrossOrigin(origins = "*")
@@ -39,13 +39,8 @@ public class PersonaController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Boolean> actualizarParcialmentePersona(@PathVariable(name = "id") Long id, @RequestBody PatchDto dto) {
-        if (dto.getOp().equalsIgnoreCase("update")) {
-            boolean result = personaIService.actualizarParcialmente(id, dto.getKey(), dto.getValue());
-            return new ResponseEntity<>(result, HttpStatus.ACCEPTED);
-        } else {
-            throw new RuntimeException("No se encontro encontro la operación");
-        }
+    public ResponseEntity<Boolean> actualizarParcialmentePersona(@PathVariable Long id, @RequestBody Map<String,String> data) {
+         return personaIService.actualizarParcialmente(id, data);
     }
 
     @DeleteMapping("/{id}")
