@@ -12,7 +12,7 @@ public interface IServicePersona {
     Optional<Persona> obtenerPorId(Long id);
     ResponseEntity<String> nuevaPersona(Persona persona);
     ResponseEntity<String> actualizarPersona(Long id, Persona persona);
-    boolean actualizarParcialmente(Long id, String key, String value);
+    boolean actualizarParcialmente(Long id, Map<String,String> data);
     ResponseEntity<String> obtenerEncabezados(Long id);
     ResponseEntity<String> eliminarPersonaPorId(Long id);
 }
